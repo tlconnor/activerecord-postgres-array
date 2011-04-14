@@ -1,6 +1,4 @@
 require 'rails'
-require 'rails/generators'
-require 'rails/generators/migration'
 
 class ActiveRecordPostgresArray < Rails::Railtie
 

@@ -1,0 +1,36 @@
+h2. Postgres array support for activerecord
+
+Add basic support for postgres arrays to activerecord, with special attention to getting rails migrations / schema dumps working nicely.
+
+
+h2. Installation
+
+<pre><code>gem install activerecord-postgres-array</code></pre>
+
+or if you use bundler
+<pre><code>gem 'activerecord-postgres-array'</code></pre>
+
+h2. Usage
+
+* In your migrations you can define postgres array fields such as:
+<pre><code>create_table :people do |t|
+  ...
+  t.string_array :real_energy
+  t.decimal_array :real_energy, :precision => 18, :scale => 6
+  ...
+end
+</code></pre>
+
+* When queried, the postgres arrays will be returned as ruby arrays, and vice versa.
+
+
+h2. Current limitations
+
+* Validation of serialised postgres array strings is currently not implemented.
+* Parsing of multi-dimensional postgres array strings is currently not implemented.
+* String and Decimal arrays have been tested, but other array types have not been.  Type casting will need to be implemented for booleans, dates, etc
+
+h3. Future enhancements
+
+* Arel like querying of values within arrays
+* Arel like aggregate functions
