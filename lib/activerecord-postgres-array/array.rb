@@ -6,7 +6,15 @@ class Array
     result = "#{omit_quotes ? '' : "'" }{"
     
     result << collect do |value|
-      value.is_a?(Array) ? value.to_postgres_array(true) : value
+      if value.is_a?(Array)
+        value.to_postgres_array(true)
+      else
+        value = value.gsub(/\\/, '\&\&')
+        value = value.gsub(/'/, "''")
+        value = value.gsub(/"/, '\"')
+        value = "\"#{ value }\""
+        value
+      end
     end.join(", ")
     
     result << "}#{omit_quotes ? '' : "'" }"
