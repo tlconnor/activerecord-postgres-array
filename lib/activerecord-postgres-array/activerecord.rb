@@ -7,15 +7,14 @@ module ActiveRecord
       POSTGRES_ARRAY_TYPES = %w( string text integer float decimal datetime timestamp time date binary boolean )
 
       def native_database_types_with_array(*args)
-        native_database_types_without_array.merge(POSTGRES_ARRAY_TYPES.inject(Hash.new) {|h, t| h.update("#{t}_array".to_sym => {:name => "#{t}_array"})})
+        native_database_types_without_array.merge(POSTGRES_ARRAY_TYPES.inject(Hash.new) {|h, t| h.update("#{t}_array".to_sym => {:name => "#{native_database_types_without_array[t.to_sym][:name]}[]"})})
       end
       alias_method_chain :native_database_types, :array
 
-    
       # Quotes a value for use in an SQL statement
       def quote_with_array(value, column = nil)
         if value && column && column.sql_type =~ /\[\]$/
-          raise ArrayTypeMismatch, "#{column.name} must have a Hash or a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?          
+          raise ArrayTypeMismatch, "#{column.name} must have a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?
           return value.to_postgres_array
         end
         quote_without_array(value,column)
@@ -58,8 +57,10 @@ module ActiveRecord
       def simplified_type_with_array(field_type)
         if field_type =~ /^numeric.+\[\]$/
           :decimal_array
+        elsif field_type =~ /character varying.*\[\]/
+          :string_array
         elsif field_type =~ /\[\]$/
-          field_type.gsub(/\[\]/, '_array')
+          field_type.gsub(/\[\]/, '_array').to_sym
         else
           simplified_type_without_array(field_type)
         end
