@@ -16,5 +16,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = s.description
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec', '~> 2.0'
 end
 
