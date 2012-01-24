@@ -2,6 +2,30 @@ module ActiveRecord
   class ArrayTypeMismatch < ActiveRecord::ActiveRecordError
   end
 
+  class Base
+    def arel_attributes_values(include_primary_key = true, include_readonly_attributes = true, attribute_names = @attributes.keys)
+      attrs      = {}
+      klass      = self.class
+      arel_table = klass.arel_table
+
+      attribute_names.each do |name|
+        if (column = column_for_attribute(name)) && (include_primary_key || !column.primary)
+          if include_readonly_attributes || !self.class.readonly_attributes.include?(name)
+            value = read_attribute(name)
+            if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
+              value = value.to_postgres_array(new_record?)
+            elsif klass.serialized_attributes.include?(name)
+              value = @attributes[name].serialized_value
+            end
+            attrs[arel_table[name]] = value
+          end
+        end
+      end
+
+      attrs
+    end
+  end
+
   module ConnectionAdapters
     class PostgreSQLAdapter < AbstractAdapter
       POSTGRES_ARRAY_TYPES = %w( string text integer float decimal datetime timestamp time date binary boolean )
@@ -14,7 +38,7 @@ module ActiveRecord
       # Quotes a value for use in an SQL statement
       def quote_with_array(value, column = nil)
         if value && column && column.sql_type =~ /\[\]$/
-          raise ArrayTypeMismatch, "#{column.name} must have a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?
+          raise ArrayTypeMismatch, "#{column.name} must be an Array or have a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?
           return value.to_postgres_array
         end
         quote_without_array(value,column)
@@ -51,7 +75,6 @@ module ActiveRecord
         end
       end
       alias_method_chain :type_cast_code, :array
-
 
       # Adds the array type for the column.
       def simplified_type_with_array(field_type)

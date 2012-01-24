@@ -27,6 +27,10 @@ describe "String" do
       "{213,}".should_not be_valid_postgres_array
     end
 
+    it 'allows enclosing single quotes' do
+      '\'{"ruby", "on", "rails"}\''.should be_valid_postgres_array
+    end
+
     it 'returns false for an array without enclosing curly brackets' do
       "213, 1234".should_not be_valid_postgres_array
     end
@@ -35,16 +39,58 @@ describe "String" do
       '{"ruby", "on", "rails"}'.should be_valid_postgres_array
     end
 
-    it 'returns true for a valid postgres string array with single quotes' do
-      "{'ruby', 'on', 'rails'}".should be_valid_postgres_array
+    it 'returns true for a postgres string array with escaped double quote' do
+      '{"ruby", "on", "ra\"ils"}'.should be_valid_postgres_array
     end
 
-    it 'returns false for string array without quotes' do
-      "{ruby, on, rails}".should_not be_valid_postgres_array
+    it 'returns false for a postgres string array with wrong quotation' do
+      '{"ruby", "on", "ra"ils"}'.should_not be_valid_postgres_array
+    end
+
+    it 'returns true for string array without quotes' do
+      "{ruby, on, rails}".should be_valid_postgres_array
+    end
+
+    it 'returns false for array consisting of commas' do
+      "{,,}".should_not be_valid_postgres_array
     end
 
     it 'returns false for concatenated strings' do
       '{"ruby""on""rails"}'.should_not be_valid_postgres_array
+    end
+
+    it "returns false if single quotes are not closed" do
+      '\'{"ruby", "on", "rails"}'.should_not be_valid_postgres_array
+    end
+  end
+
+  describe "#from_postgres_array" do
+    it 'returns an empty array if string is empty' do
+      "".from_postgres_array.should == []
+    end
+
+    it 'returns an empty array if empty postgres array is given' do
+      "{}".from_postgres_array.should == []
+    end
+
+    it 'returns an correct array if a valid postgres array is given' do
+      "{Ruby,on,Rails}".from_postgres_array.should == ["Ruby", "on", "Rails"]
+    end
+
+    it 'correctly handles commas' do
+      '{Ruby,on,"Rails,"}'.from_postgres_array.should == ["Ruby", "on", "Rails,"]
+    end
+
+    it 'correctly handles single quotes' do
+      "{Ruby,on,Ra'ils}".from_postgres_array.should == ["Ruby", "on", "Ra'ils"]
+    end
+
+    it 'correctly handles double quotes' do
+      "{Ruby,on,\"Ra\\\"ils\"}".from_postgres_array.should == ["Ruby", "on", 'Ra"ils']
+    end
+
+    it 'correctly handles backslashes' do
+      '\'{"\\\\","\\""}\''.from_postgres_array.should == ["\\","\""]
     end
   end
 end
