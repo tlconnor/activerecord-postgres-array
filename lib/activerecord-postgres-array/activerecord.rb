@@ -1,3 +1,5 @@
+require 'active_record/connection_adapters/postgresql_adapter'
+
 module ActiveRecord
   class ArrayTypeMismatch < ActiveRecord::ActiveRecordError
   end

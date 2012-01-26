@@ -37,7 +37,7 @@ describe Article do
       article.languages.should == ["\\","\""]
     end
   end
-  
+
   describe ".update" do
     before(:each) do
       @article = Article.create
