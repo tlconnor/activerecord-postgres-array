@@ -11,7 +11,7 @@ class String
     string_regexp = /[^",\\]+/
     quoted_string_regexp = /"[^"\\]*(?:\\.[^"\\]*)*"/
     number_regexp = /[-+]?[0-9]*\.?[0-9]+/
-    validation_regexp = /\{\s*(#{number_regexp}|#{quoted_string_regexp}|#{string_regexp})(\s*\,\s*(#{number_regexp}|#{quoted_string_regexp}|#{string_regexp}))*\}/
+    validation_regexp = /\{\s*(#{number_regexp}|#{quoted_string_regexp}|#{string_regexp})?(\s*\,\s*(#{number_regexp}|#{quoted_string_regexp}|#{string_regexp}))*\}/
     !!match(/^\s*('#{validation_regexp}'|#{validation_regexp})?\s*$/)
   end
 

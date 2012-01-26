@@ -6,7 +6,7 @@ describe "String" do
     it 'returns true for an empty string' do
       "".should be_valid_postgres_array
     end
-    
+
     it 'returns true for a string consisting only of whitespace' do
       "   ".should be_valid_postgres_array
     end
@@ -61,6 +61,10 @@ describe "String" do
 
     it "returns false if single quotes are not closed" do
       '\'{"ruby", "on", "rails"}'.should_not be_valid_postgres_array
+    end
+
+    it "returns true for an empty postgres array" do
+      "{}".should be_valid_postgres_array
     end
   end
 
