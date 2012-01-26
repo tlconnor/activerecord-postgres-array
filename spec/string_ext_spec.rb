@@ -66,6 +66,11 @@ describe "String" do
     it "returns true for an empty postgres array" do
       "{}".should be_valid_postgres_array
     end
+
+    it "returns false for postgres array beginning with ," do
+      "{,ruby,on,rails}".should_not be_valid_postgres_array
+    end
+
   end
 
   describe "#from_postgres_array" do
