@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.date = %q{2011-04-15}
   s.description = "Adds support for postgres arrays to ActiveRecord"
   s.email = "tim@youdo.co.nz"
+  s.homepage = "https://github.com/tlconnor/activerecord-postgres-array"
   s.files = [
      "lib/activerecord-postgres-array.rb",
      "lib/activerecord-postgres-array/activerecord.rb",
