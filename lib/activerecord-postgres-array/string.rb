@@ -1,5 +1,4 @@
 class String
-
   def to_postgres_array
     self
   end
@@ -9,27 +8,27 @@ class String
   # * A string like '{10000, 10000, 10000, 10000}'
   # * TODO A multi dimensional array string like '{{"meeting", "lunch"}, {"training", "presentation"}}'
   def valid_postgres_array?
-    # TODO validate formats above
-    true
+    string_regexp = /[^",\\]+/
+    quoted_string_regexp = /"[^"\\]*(?:\\.[^"\\]*)*"/
+    number_regexp = /[-+]?[0-9]*\.?[0-9]+/
+    validation_regexp = /\{\s*((#{number_regexp}|#{quoted_string_regexp}|#{string_regexp})(\s*\,\s*(#{number_regexp}|#{quoted_string_regexp}|#{string_regexp}))*)?\}/
+    !!match(/^\s*('#{validation_regexp}'|#{validation_regexp})?\s*$/)
   end
 
   # Creates an array from a postgres array string that postgresql spits out.
   def from_postgres_array(base_type = :string)
     if empty?
-      return []
+      []
     else
-      elements = match(/^\{(.+)\}$/).captures.first.split(",")
+      elements = match(/\{(.*)\}/).captures.first.gsub(/\\"/, '$ESCAPED_DOUBLE_QUOTE$').split(/(,)(?=(?:[^"]|"[^"]*")*$)/).reject {|e| e == ',' }
       elements = elements.map do |e|
-        e = e.gsub(/\\"/, '"')
-        e = e.gsub(/^\"/, '')
-        e = e.gsub(/\"$/, '')
-        e = e.strip
+        e.gsub('$ESCAPED_DOUBLE_QUOTE$', '"').gsub("\\\\", "\\").gsub(/^"/, '').gsub(/"$/, '').gsub("''", "'").strip
       end
-      
+
       if base_type == :decimal
-        return elements.collect(&:to_d)
+        elements.collect(&:to_d)
       else
-        return elements
+        elements
       end
     end
   end
