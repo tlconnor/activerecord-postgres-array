@@ -2,5 +2,3 @@ test:
   adapter: postgresql
   encoding: unicode
   database: apa_test
-  username: apa_test
-  password:
