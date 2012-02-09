@@ -23,10 +23,12 @@ end
 
 * When queried, the postgres arrays will be returned as ruby arrays, and vice versa.
 
+h3. Compatibility with activerecord-postgres-hstore
+
+activerecord-postgres-hstore and activerecord-postgres-array both monkeypatch @ActiveRecord::Base#arel_attributes_values@, which leads to problems if these gems are used together. This gem is aware of activerecord-postgres-hstore and incorporates it in the monkeypatch. However, it is important that activerecord-postgres-array is loaded _after_ activerecord-postgres-hstore for this to work.
 
 h2. Current limitations
 
-* Validation of serialised postgres array strings is currently not implemented.
 * Parsing of multi-dimensional postgres array strings is currently not implemented.
 * String and Decimal arrays have been tested, but other array types have not been.  Type casting will need to be implemented for booleans, dates, etc
 
