@@ -13,6 +13,8 @@ class Array
         value = value.gsub(/"/, '\"')
         value = "\"#{ value }\""
         value
+      elsif value.is_a?(NilClass)
+        value = 'NULL'
       else
         value
       end
