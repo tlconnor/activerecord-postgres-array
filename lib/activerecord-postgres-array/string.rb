@@ -22,7 +22,8 @@ class String
     else
       elements = match(/\{(.*)\}/).captures.first.gsub(/\\"/, '$ESCAPED_DOUBLE_QUOTE$').split(/(,)(?=(?:[^"]|"[^"]*")*$)/).reject {|e| e == ',' }
       elements = elements.map do |e|
-        e.gsub('$ESCAPED_DOUBLE_QUOTE$', '"').gsub("\\\\", "\\").gsub(/^"/, '').gsub(/"$/, '').gsub("''", "'").strip
+        res = e.gsub('$ESCAPED_DOUBLE_QUOTE$', '"').gsub("\\\\", "\\").gsub(/^"/, '').gsub(/"$/, '').gsub("''", "'").strip
+        res == 'NULL' ? nil : res
       end
 
       if base_type == :decimal
