@@ -30,7 +30,7 @@ activerecord-postgres-hstore and activerecord-postgres-array both monkeypatch @A
 h2. Current limitations
 
 * Parsing of multi-dimensional postgres array strings is currently not implemented.
-* String and Decimal arrays have been tested, but other array types have not been.  Type casting will need to be implemented for booleans, dates, etc
+* String, Decimal and Integer arrays have been tested, but other array types have not been.  Type casting will need to be implemented for booleans, dates, etc
 
 h3. Future enhancements
 

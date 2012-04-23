@@ -3,10 +3,12 @@ require 'spec_helper'
 describe Article do
   describe ".create" do
     it "builds valid arrays" do
-      article = Article.create(:languages => ["English", "German"])
+      article = Article.create(:languages => ["English", "German"], :author_ids => [1,2,3])
       article.reload
       article.languages_before_type_cast.should == "{English,German}"
       article.languages.should == ["English", "German"]
+      article.author_ids_before_type_cast.should == "{1,2,3}"
+      article.author_ids.should == [1,2,3]
     end
 
     it "escapes single quotes correctly" do
