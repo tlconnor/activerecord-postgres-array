@@ -25,9 +25,10 @@ class String
         res = e.gsub('$ESCAPED_DOUBLE_QUOTE$', '"').gsub("\\\\", "\\").gsub(/^"/, '').gsub(/"$/, '').gsub("''", "'").strip
         res == 'NULL' ? nil : res
       end
-
       if base_type == :decimal
         elements.collect(&:to_d)
+      elsif base_type == :integer
+        elements.collect(&:to_i)
       else
         elements
       end
