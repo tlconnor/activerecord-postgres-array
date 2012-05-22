@@ -1,3 +1,4 @@
+require 'csv'
 class String
   def to_postgres_array
     self
@@ -20,9 +21,9 @@ class String
     if empty?
       []
     else
-      elements = match(/\{(.*)\}/).captures.first.gsub(/\\"/, '$ESCAPED_DOUBLE_QUOTE$').split(/(,)(?=(?:[^"]|"[^"]*")*$)/).reject {|e| e == ',' }
+      elements = CSV.parse(match(/\{(.*)\}/)[1].gsub(/([^\\])\\"/, '\1""')).first || []
       elements = elements.map do |e|
-        res = e.gsub('$ESCAPED_DOUBLE_QUOTE$', '"').gsub("\\\\", "\\").gsub(/^"/, '').gsub(/"$/, '').gsub("''", "'").strip
+        res = e.gsub("\\\\", "\\").gsub("''","'").strip
         res == 'NULL' ? nil : res
       end
 
