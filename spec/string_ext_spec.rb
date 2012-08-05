@@ -101,5 +101,9 @@ describe "String" do
     it 'correctly handles backslashes' do
       '\'{"\\\\","\\""}\''.from_postgres_array.should == ["\\","\""]
     end
+
+    it 'correctly handles multi line content' do
+      "{A\nB\nC,X\r\nY\r\nZ}".from_postgres_array.should == ["A\nB\nC", "X\r\nY\r\nZ"]
+    end
   end
 end
