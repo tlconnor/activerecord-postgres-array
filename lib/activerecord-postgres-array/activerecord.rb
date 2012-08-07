@@ -48,6 +48,24 @@ module ActiveRecord
       alias_method_chain :quote, :array
     end
 
+    class Table
+      # Adds array type for migrations. So you can add columns to a table like:
+      #   create_table :people do |t|
+      #     ...
+      #     t.string_array :real_energy
+      #     t.decimal_array :real_energy, :precision => 18, :scale => 6
+      #     ...
+      #   end
+      PostgreSQLAdapter::POSTGRES_ARRAY_TYPES.each do |column_type|
+        define_method("#{column_type}_array") do |*args|
+          options = args.extract_options!
+          base_type = @base.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
+          column_names = args
+          column_names.each { |name| column(name, "#{base_type}[]", options) }
+        end
+      end
+    end
+
     class TableDefinition
       # Adds array type for migrations. So you can add columns to a table like:
       #   create_table :people do |t|
