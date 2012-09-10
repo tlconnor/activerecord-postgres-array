@@ -47,9 +47,13 @@ describe Article do
 
     it "builds valid arrays" do
       @article.languages = ["English", "German"]
+      @article.prices = [1.2, 1.3]
       @article.save
       @article.reload
       @article.languages_before_type_cast.should == "{English,German}"
+      @article.prices_before_type_cast.should == "{1.2,1.3}"
+      @article.languages.should == ["English", "German"]
+      @article.prices.should == [1.2, 1.3]
     end
 
     it "escapes single quotes correctly" do

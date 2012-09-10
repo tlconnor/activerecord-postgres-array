@@ -3,5 +3,6 @@ ActiveRecord::Schema.define do
     t.string        :name
     t.string_array  :languages
     t.integer_array :author_ids
+    t.float_array   :prices
   end
 end

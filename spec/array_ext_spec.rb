@@ -11,6 +11,10 @@ describe "Array" do
       [1,2,3].to_postgres_array.should == "'{1,2,3}'"
     end
 
+    it "returns a correct array if used on a float array" do
+      [1.0,2.1,3.2].to_postgres_array.should == "'{1.0,2.1,3.2}'"
+    end
+
     it "returns a correct array if used on a string array" do
       ["Ruby","on","Rails"].to_postgres_array.should == "'{\"Ruby\",\"on\",\"Rails\"}'"
     end
