@@ -73,7 +73,7 @@ module ActiveRecord
       def type_cast_code_with_array(var_name)
         if type.to_s =~ /_array$/
           base_type = type.to_s.gsub(/_array/, '')
-          "#{var_name}.from_postgres_array(:#{base_type})"
+          "#{var_name}.from_postgres_array(:#{base_type.parameterize('_')})"
         else
           type_cast_code_without_array(var_name)
         end
