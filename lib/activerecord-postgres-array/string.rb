@@ -28,6 +28,8 @@ class String
 
       if base_type == :decimal
         elements.collect(&:to_d)
+      elsif base_type == :float
+        elements.collect(&:to_f)
       elsif base_type == :integer
         elements.collect(&:to_i)
       else
