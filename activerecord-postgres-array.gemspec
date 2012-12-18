@@ -13,7 +13,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = s.description
 
-  s.add_dependency "activerecord"
+  s.add_dependency "activerecord", '3.1.3'
+  s.add_development_dependency "rails", '3.1.3'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.0'
   s.add_development_dependency 'pg'

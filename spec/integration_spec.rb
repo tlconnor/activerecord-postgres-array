@@ -38,6 +38,20 @@ describe Article do
       article.languages_before_type_cast.should == '{"\\\\","\\""}'
       article.languages.should == ["\\","\""]
     end
+
+    it "handles hash serialization correctly" do
+      article = Article.create(:metadata_hash => { :param1 => "one", :param2 => "two" })
+      article.reload
+      article.metadata_hash.is_a?(Hash).should be_true
+      article.metadata_hash.should == { :param1 => "one", :param2 => "two" }
+    end
+
+    it "handles json serialization correctly" do
+      article = Article.create(:metadata_json => { "param1" => "one", "param2" => "two" })
+      article.reload
+      article.metadata_json.is_a?(Hash).should be_true
+      article.metadata_json.should == { "param1" => "one", "param2" => "two" }
+    end
   end
 
   describe ".update" do
