@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-require 'active_support/dependencies'
+require 'active_support'
 
 Bundler.require :default, :development
 

@@ -18,8 +18,8 @@ module ActiveRecord
               value = value.to_postgres_array(new_record?)
             elsif defined?(::Hstore) && column.type == :hstore && value && value.is_a?(Hash)
               value = value.to_hstore
-            elsif klass.serialized_attributes.include?(name)
-              value = @attributes[name].serialized_value
+            elsif coder = klass.serialized_attributes[name]
+              value = coder.dump @attributes[name]
             end
             attrs[arel_table[name]] = value
           end
