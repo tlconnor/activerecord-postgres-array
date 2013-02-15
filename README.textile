@@ -25,6 +25,12 @@ end
 
 h3. Compatibility with activerecord-postgres-hstore
 
+**Note**
+
+As of activerecord-postgres-hstore '0.7.0', @ActiveRecord::Base#arel_attributes_value@ is not monkey patched and therefore does not interfere with loading of this gem.
+
+If you are using '0.6.0', or earlier, of activerecord-postgres-hstore you must use this gem's version '0.0.8' and the following still applies:
+
 activerecord-postgres-hstore and activerecord-postgres-array both monkeypatch @ActiveRecord::Base#arel_attributes_values@, which leads to problems if these gems are used together. This gem is aware of activerecord-postgres-hstore and incorporates it in the monkeypatch. However, it is important that activerecord-postgres-array is loaded _after_ activerecord-postgres-hstore for this to work.
 
 h2. Current limitations
