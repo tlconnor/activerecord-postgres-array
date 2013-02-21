@@ -28,8 +28,12 @@ class String
 
       if base_type == :decimal
         elements.collect(&:to_d)
-      elsif base_type == :integer
+      elsif base_type == :float
+        elements.collect(&:to_f)
+      elsif base_type == :integer || base_type == :bigint
         elements.collect(&:to_i)
+      elsif base_type == :timestamp
+        elements.collect(&:to_time)
       else
         elements
       end

@@ -16,8 +16,6 @@ module ActiveRecord
             value = read_attribute(name)
             if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
               value = value.to_postgres_array(new_record?)
-            elsif defined?(::Hstore) && column.type == :hstore && value && value.is_a?(Hash)
-              value = value.to_hstore
             elsif klass.serialized_attributes.include?(name)
               value = @attributes[name].serialized_value
             end
@@ -50,6 +48,24 @@ module ActiveRecord
       alias_method_chain :quote, :array
     end
 
+    class Table
+      # Adds array type for migrations. So you can add columns to a table like:
+      #   create_table :people do |t|
+      #     ...
+      #     t.string_array :real_energy
+      #     t.decimal_array :real_energy, :precision => 18, :scale => 6
+      #     ...
+      #   end
+      PostgreSQLAdapter::POSTGRES_ARRAY_TYPES.each do |column_type|
+        define_method("#{column_type}_array") do |*args|
+          options = args.extract_options!
+          base_type = @base.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
+          column_names = args
+          column_names.each { |name| column(name, "#{base_type}[]", options) }
+        end
+      end
+    end
+
     class TableDefinition
       # Adds array type for migrations. So you can add columns to a table like:
       #   create_table :people do |t|
@@ -73,7 +89,7 @@ module ActiveRecord
       def type_cast_code_with_array(var_name)
         if type.to_s =~ /_array$/
           base_type = type.to_s.gsub(/_array/, '')
-          "#{var_name}.from_postgres_array(:#{base_type})"
+          "#{var_name}.from_postgres_array(:#{base_type.parameterize('_')})"
         else
           type_cast_code_without_array(var_name)
         end
@@ -86,6 +102,10 @@ module ActiveRecord
           :decimal_array
         elsif field_type =~ /character varying.*\[\]/
           :string_array
+        elsif field_type =~ /^(?:real|double precision)\[\]$/
+          :float_array
+        elsif field_type =~ /timestamp.*\[\]/
+          :timestamp_array
         elsif field_type =~ /\[\]$/
           field_type.gsub(/\[\]/, '_array').to_sym
         else
