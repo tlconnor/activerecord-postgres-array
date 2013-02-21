@@ -53,6 +53,22 @@ describe Article do
       article.author_ids.should == [1, 2, 3]
       article.prices.should == [1.1, 2.2, 3.3]
     end
+
+    it 'does not interfere with hstore serialization' do
+      article = Article.create!(
+        :languages => ['a','b'],
+        :author_ids => [1, 2, 3],
+        :prices => [1.1, 2.2, 3.3],
+        :hstore_column => {:a => 1, :b => 2}
+      )
+      article.reload
+
+      article.hstore_column['a'].to_s.should == '1'
+      article.hstore_column['b'].to_s.should == '2'
+      article.languages.should == ['a', 'b']
+      article.author_ids.should == [1, 2, 3]
+      article.prices.should == [1.1, 2.2, 3.3]
+    end
   end
 
   describe ".update" do
