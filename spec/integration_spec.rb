@@ -38,6 +38,21 @@ describe Article do
       article.languages_before_type_cast.should == '{"\\\\","\\""}'
       article.languages.should == ["\\","\""]
     end
+
+    it 'does not interfere with YAML serialization' do
+      article = Article.create!(
+        :languages => ['a','b'],
+        :author_ids => [1, 2, 3],
+        :prices => [1.1, 2.2, 3.3],
+        :serialized_column => {:a => 1, :b => 2}
+      )
+      article.reload
+
+      article.serialized_column.should == {:a => 1, :b => 2}
+      article.languages.should == ['a', 'b']
+      article.author_ids.should == [1, 2, 3]
+      article.prices.should == [1.1, 2.2, 3.3]
+    end
   end
 
   describe ".update" do
