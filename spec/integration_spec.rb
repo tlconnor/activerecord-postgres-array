@@ -118,6 +118,18 @@ describe Article do
       @article.languages_before_type_cast.should == '{"\\\\","\\""}'
       @article.languages.should == ["\\","\""]
     end
-  end
 
+    it 'is able to be contatenated with new arrays' do
+      article = Article.new
+      article.languages = (article.languages || []) + ['a', 'b', 'c']
+      article.save!
+      article.reload
+      article.languages.should == ['a', 'b', 'c']
+
+      article.languages += ['d']
+      article.save!
+      article.reload
+      article.languages.should == ['a', 'b', 'c', 'd']
+    end
+  end
 end
