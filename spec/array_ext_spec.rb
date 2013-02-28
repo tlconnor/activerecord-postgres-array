@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'activerecord-postgres-array/array'
 
-describe "Array" do
+describe Array do
   describe "#to_postgres_array" do
     it "returns '{}' if used on an empty array" do
       [].to_postgres_array.should == "'{}'"
@@ -25,6 +25,13 @@ describe "Array" do
 
     it "escapes backslashes correctly" do
       ["\\","\""].to_postgres_array.should == '\'{"\\\\","\\""}\''
+    end
+  end
+
+  describe "#from_postgres_array" do
+    subject(:array) { [:foo, :bar, :baz] }
+    it "returns the array itself" do
+      array.from_postgres_array.should eq array
     end
   end
 end
