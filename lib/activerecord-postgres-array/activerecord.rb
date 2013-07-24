@@ -39,7 +39,7 @@ module ActiveRecord
 
       # Quotes a value for use in an SQL statement
       def quote_with_array(value, column = nil)
-        if value && column && column.sql_type =~ /\[\]$/
+        if value && column && column.type =~ /\[\]$/
           raise ArrayTypeMismatch, "#{column.name} must be an Array or have a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?
           return value.to_postgres_array
         end
@@ -59,7 +59,7 @@ module ActiveRecord
       PostgreSQLAdapter::POSTGRES_ARRAY_TYPES.each do |column_type|
         define_method("#{column_type}_array") do |*args|
           options = args.extract_options!
-          base_type = @base.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
+          base_type = ActiveRecord::Base.connection.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
           column_names = args
           column_names.each { |name| column(name, "#{base_type}[]", options) }
         end
@@ -77,7 +77,7 @@ module ActiveRecord
       PostgreSQLAdapter::POSTGRES_ARRAY_TYPES.each do |column_type|
         define_method("#{column_type}_array") do |*args|
           options = args.extract_options!
-          base_type = @base.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
+          base_type = ActiveRecord::Base.connection.type_to_sql(column_type.to_sym, options[:limit], options[:precision], options[:scale])
           column_names = args
           column_names.each { |name| column(name, "#{base_type}[]", options) }
         end
