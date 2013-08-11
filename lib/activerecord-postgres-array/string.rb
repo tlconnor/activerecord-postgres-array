@@ -13,9 +13,10 @@ class String
   # * An empty string
   # * A string like '{10000, 10000, 10000, 10000}'
   # * TODO A multi dimensional array string like '{{"meeting", "lunch"}, {"training", "presentation"}}'
-  def valid_postgres_array?
-    !!match(/^\s*('#{PgValidationRegexp}'|#{PgValidationRegexp})?\s*$/)
-  end
+  # def valid_postgres_array?
+  #   !!match(/^\s*('#{PgValidationRegexp}'|#{PgValidationRegexp})?\s*$/)
+  #   true
+  # end
 
   # Creates an array from a postgres array string that postgresql spits out.
   def from_postgres_array(base_type = :string)
@@ -27,6 +28,7 @@ class String
         when :float then Proc.new {|x| x.to_f }
         when :intger then Proc.new {|x| x.to_i }
         when :timestamp then Proc.new {|x| x.to_time.in_time_zone }
+        when :boolean then Proc.new {|x| x.downcase=='t' ? true : false }
         else Proc.new {|x| x }
       end
 
