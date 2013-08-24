@@ -15,6 +15,8 @@ class Array
         value
       elsif value.is_a?(NilClass)
         value = 'NULL'
+      elsif value.is_a?(Time)
+        value = "\"#{value.getutc.iso8601}\""
       else
         value
       end

@@ -16,8 +16,8 @@ module ActiveRecord
             value = read_attribute(name)
             if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
               value = value.to_postgres_array(new_record?)
-            elsif klass.serialized_attributes.include?(name)
-              value = @attributes[name].serialized_value
+            elsif coder = klass.serialized_attributes[name]
+              value = coder.dump @attributes[name]
             end
             attrs[arel_table[name]] = value
           end
@@ -40,7 +40,7 @@ module ActiveRecord
       # Quotes a value for use in an SQL statement
       def quote_with_array(value, column = nil)
         if value && column && column.sql_type =~ /\[\]$/
-          raise ArrayTypeMismatch, "#{column.name} must be an Array or have a valid array value (#{value})" unless value.kind_of?(Array) || value.valid_postgres_array?
+          # raise ArrayTypeMismatch, "#{column.name} must be an Array or have a valid array value (#{value})" unless value.kind_of?(Array)
           return value.to_postgres_array
         end
         quote_without_array(value,column)
