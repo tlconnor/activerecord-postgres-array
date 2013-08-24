@@ -26,7 +26,7 @@ class String
       converter = case base_type
         when :decimal then Proc.new {|x| x.to_d }
         when :float then Proc.new {|x| x.to_f }
-        when :intger then Proc.new {|x| x.to_i }
+        when :integer then Proc.new {|x| x.to_i }
         when :timestamp then Proc.new {|x| x.to_time.in_time_zone }
         when :boolean then Proc.new {|x| x.downcase=='t' ? true : false }
         else Proc.new {|x| x }
