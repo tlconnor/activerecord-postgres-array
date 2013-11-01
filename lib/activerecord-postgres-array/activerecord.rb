@@ -15,7 +15,7 @@ module ActiveRecord
           if include_readonly_attributes || !self.class.readonly_attributes.include?(name)
             value = read_attribute(name)
             if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
-              value = "'#{value.to_postgres_array(new_record?)}'"
+              value = value.to_postgres_array(new_record?)
             elsif klass.serialized_attributes.include?(name)
               value = @attributes[name].serialized_value
             end
