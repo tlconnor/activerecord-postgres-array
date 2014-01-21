@@ -98,7 +98,7 @@ module ActiveRecord
 
       # Adds the array type for the column.
       def simplified_type_with_array(field_type)
-        if field_type =~ /^numeric.+\[\]$/
+        if field_type =~ /^numeric.*\[\]$/
           :decimal_array
         elsif field_type =~ /character varying.*\[\]/
           :string_array
