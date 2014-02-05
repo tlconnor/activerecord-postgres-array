@@ -26,16 +26,16 @@ class String
         res == 'NULL' ? nil : res
       end
 
-      if base_type == :decimal
-        elements.collect(&:to_d)
-      elsif base_type == :float
-        elements.collect(&:to_f)
-      elsif base_type == :integer || base_type == :bigint
-        elements.collect(&:to_i)
-      elsif base_type == :timestamp
-        elements.collect(&:to_time)
-      else
-        elements
+      typecast = {
+        :decimal   => :to_d,
+        :float     => :to_f,
+        :integer   => :to_i,
+        :bigint    => :to_i,
+        :timestamp => :to_time
+      }.fetch(base_type,false)
+
+      elements.map do |e|
+        typecast ? e.try(typecast) : e
       end
     end
   end

@@ -105,5 +105,54 @@ describe "String" do
     it 'correctly handles multi line content' do
       "{A\nB\nC,X\r\nY\r\nZ}".from_postgres_array.should == ["A\nB\nC", "X\r\nY\r\nZ"]
     end
+
+    it "returns NULL values as nil" do
+      "{NULL,on,Rails}".from_postgres_array.should == [nil, "on", "Rails"]
+    end
+
+    context "with a base_type of :decimal" do
+      it "returns decimal numbers" do
+        "{1.1,2.1,3.1}".from_postgres_array(:decimal).should eql [1.1,2.1,3.1]
+      end
+
+      it "returns NULL values as nil" do
+        "{NULL,2.1,3.1}".from_postgres_array(:decimal).should eql [nil, 2.1, 3.1]
+      end
+    end
+
+    context "with a base_type of :integer" do
+      it "returns integers" do
+        "{1,2,3}".from_postgres_array(:integer).should eql [1,2,3]
+      end
+
+      it "returns NULL values as nil" do
+        "{NULL,2,3}".from_postgres_array(:integer).should eql [nil, 2, 3]
+      end
+    end
+
+    context "with a base_type of :float" do
+      it "returns floats" do
+        "{1,2,3}".from_postgres_array(:float).should eql [1.to_f,2.to_f,3.to_f]
+      end
+
+      it "returns NULL values as nil" do
+        "{NULL,2,3}".from_postgres_array(:float).should eql [nil, 2.to_f, 3.to_f]
+      end
+    end
+
+    context "with a base_type of timestamp" do
+      it "returns time objects" do
+        '{"2004-10-19 10:23:54","2004-10-19 10:23:54"}'.from_postgres_array(:timestamp).should eql [
+          "2004-10-19 10:23:54".to_time,
+          "2004-10-19 10:23:54".to_time 
+        ]
+      end
+
+      it "returns NULL values as nil" do
+        '{NULL,"2004-10-19 10:23:54"}'.from_postgres_array(:timestamp).should eql [
+          nil, "2004-10-19 10:23:54".to_time 
+        ]
+      end
+    end
   end
 end
