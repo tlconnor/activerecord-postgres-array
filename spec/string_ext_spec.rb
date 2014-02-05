@@ -105,5 +105,23 @@ describe "String" do
     it 'correctly handles multi line content' do
       "{A\nB\nC,X\r\nY\r\nZ}".from_postgres_array.should == ["A\nB\nC", "X\r\nY\r\nZ"]
     end
+
+    it 'handles decimal content' do
+      "{15.49151, 16.0}".from_postgres_array(:decimal).should == [15.49151, 16.0]
+    end
+
+    it 'handles float content' do
+      "{15.49151, 16.0}".from_postgres_array(:float).should == [15.49151, 16.0]
+    end
+
+    it 'handles integer content' do
+      "{1,2,3}".from_postgres_array(:integer).should == [1,2,3]
+    end
+
+    it 'handles timestamp content' do
+      t1 = Time.at(628232400)
+      t2 = Time.at(1362018690)
+      "{#{t1},#{t2}}".from_postgres_array(:timestamp).should == [t1, t2]
+    end
   end
 end

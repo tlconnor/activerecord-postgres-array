@@ -96,6 +96,16 @@ module ActiveRecord
       end
       alias_method_chain :type_cast_code, :array
 
+      def type_cast_with_array(value)
+        if value.present? && type.to_s =~ /_array$/
+          base_type = type.to_s.gsub(/_array/, '')
+          value.from_postgres_array(base_type.parameterize('_').to_sym)
+        else
+          type_cast_without_array(value)
+        end
+      end
+      alias_method_chain :type_cast, :array
+
       # Adds the array type for the column.
       def simplified_type_with_array(field_type)
         if field_type =~ /^numeric.+\[\]$/

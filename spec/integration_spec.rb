@@ -133,3 +133,14 @@ describe Article do
     end
   end
 end
+
+describe DefaultArticle do
+  it "creates a model with defaults" do
+    article = DefaultArticle.create
+    article.reload
+    article.name.should == 'AbC'
+    article.author_ids.should == [1,2,3]
+    article.prices.should == [12.519267, 16.0]
+    article.defaults.should == ['foo', 'bar', 'baz qux']
+  end
+end
