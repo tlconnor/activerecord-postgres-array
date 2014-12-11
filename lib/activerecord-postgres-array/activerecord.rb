@@ -5,27 +5,27 @@ module ActiveRecord
   end
 
   class Base
-    def arel_attributes_values(include_primary_key = true, include_readonly_attributes = true, attribute_names = @attributes.keys)
-      attrs      = {}
-      klass      = self.class
-      arel_table = klass.arel_table
+    # def arel_attributes_values(include_primary_key = true, include_readonly_attributes = true, attribute_names = @attributes.keys)
+    #   attrs      = {}
+    #   klass      = self.class
+    #   arel_table = klass.arel_table
 
-      attribute_names.each do |name|
-        if (column = column_for_attribute(name)) && (include_primary_key || !column.primary)
-          if include_readonly_attributes || !self.class.readonly_attributes.include?(name)
-            value = read_attribute(name)
-            if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
-              value = value.to_postgres_array(new_record?)
-            elsif coder = klass.serialized_attributes[name]
-              value = coder.dump @attributes[name]
-            end
-            attrs[arel_table[name]] = value
-          end
-        end
-      end
+    #   attribute_names.each do |name|
+    #     if (column = column_for_attribute(name)) && (include_primary_key || !column.primary)
+    #       if include_readonly_attributes || !self.class.readonly_attributes.include?(name)
+    #         value = read_attribute(name)
+    #         if column.type.to_s =~ /_array$/ && value && value.is_a?(Array)
+    #           value = value.to_postgres_array(new_record?)
+    #         elsif coder = klass.serialized_attributes[name]
+    #           value = coder.dump @attributes[name]
+    #         end
+    #         attrs[arel_table[name]] = value
+    #       end
+    #     end
+    #   end
 
-      attrs
-    end
+    #   attrs
+    # end
   end
 
   module ConnectionAdapters
@@ -45,7 +45,7 @@ module ActiveRecord
         end
         quote_without_array(value,column)
       end
-      alias_method_chain :quote, :array
+      # alias_method_chain :quote, :array
     end
 
     class Table
