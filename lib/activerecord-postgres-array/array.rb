@@ -17,6 +17,10 @@ class Array
         value = 'NULL'
       elsif value.is_a?(Time)
         value = "\"#{value.getutc.iso8601}\""
+      elsif value.is_a?(TrueClass)
+        't'
+      elsif value.is_a?(FalseClass)
+        'f'
       else
         value
       end

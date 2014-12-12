@@ -28,7 +28,7 @@ class String
         when :float then Proc.new {|x| x.to_f }
         when :integer then Proc.new {|x| x.to_i }
         when :timestamp then Proc.new {|x| x.to_time.in_time_zone }
-        when :boolean then Proc.new {|x| x.downcase=='t' ? true : false }
+        when :boolean then Proc.new {|x| (x.downcase=='t' || x==true) ? true : false }
         else Proc.new {|x| x }
       end
 
