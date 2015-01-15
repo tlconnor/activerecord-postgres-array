@@ -85,6 +85,19 @@ module ActiveRecord
     end
 
     class PostgreSQLColumn < Column
+
+      # 
+      def type_cast_with_array(val)
+        if type.to_s =~ /_array$/
+          base_type = type.to_s.gsub(/_array/, '')
+          val.nil? ? nil : val.from_postgres_array(base_type.parameterize('_').to_sym)
+        else
+          type_cast_without_array(val)
+        end        
+      end
+      alias_method_chain :type_cast, :array
+
+
       # Does the type casting from array columns using String#from_postgres_array or Array#from_postgres_array.
       def type_cast_code_with_array(var_name)
         if type.to_s =~ /_array$/
