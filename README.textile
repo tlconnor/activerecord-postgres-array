@@ -1,4 +1,4 @@
-h2. Postgres array support for activerecord
+h2. Postgres array support for activerecord modified by VacationLabs
 
 Add basic support for postgres arrays to activerecord, with special attention to getting rails migrations / schema dumps working nicely.
 
