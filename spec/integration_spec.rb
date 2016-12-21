@@ -14,7 +14,7 @@ describe Article do
     it "escapes single quotes correctly" do
       article = Article.create(:languages => ["English", "Ger'man"])
       article.reload
-      article.languages_before_type_cast.should == "{English,Ger''man}"
+      article.languages_before_type_cast.should == "{English,Ger'man}"
       article.languages.should == ["English", "Ger'man"]
     end
 
@@ -33,7 +33,7 @@ describe Article do
     end
 
     it "handles backslashes correctly" do
-      article = Article.create(:languages => ["\\","\""])
+      article = Article.create(:languages => ["\\\\","\""])
       article.reload
       article.languages_before_type_cast.should == '{"\\\\","\\""}'
       article.languages.should == ["\\","\""]
@@ -112,7 +112,7 @@ describe Article do
     end
 
     it "handles backslashes correctly" do
-      @article.languages = ["\\","\""]
+      @article.languages = ["\\\\","\""]
       @article.save
       @article.reload
       @article.languages_before_type_cast.should == '{"\\\\","\\""}'
